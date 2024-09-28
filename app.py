@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request
 #Create model for faq
 import google.generativeai as genai
+import os
 
 model = genai.GenerativeModel ("gemini-1.5-flash")
+api=os.getenv("MAKERSUITE") #hide api (like a private key/ pw)
 genai.configure(api_key= "AIzaSyCFAOkFd5qjen2xJmfrQjbYAq4pb9oz7fI")
 
 app = Flask(__name__)
