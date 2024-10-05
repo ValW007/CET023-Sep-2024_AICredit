@@ -2,6 +2,8 @@ from flask import Flask, render_template, request #flask is a web framework for 
 #Create model for faq
 import google.generativeai as genai
 import os
+import numpy as np
+import textblob as textblob
 
 model = genai.GenerativeModel ("gemini-1.5-flash")
 api=os.getenv("MAKERSUITE") #hide api (like a private key/ pw)
@@ -13,6 +15,8 @@ app = Flask(__name__) #create an instance of the web framework for python, where
 def index(): #when "/" is called, generate function called index
         return(render_template("index.html")) # Flask function will look to index.html under templates for the generation
 
+
+#SHARE PRICE PREDICTION
 @app.route("/prediction_DBS",methods=["GET","POST"]) 
 def prediction_DBS(): #when "/prediction_DBS" function is called
         return(render_template("prediction_DBS.html")) #Flask function will look to "prediction_DBS.html" under templates to generate
@@ -24,6 +28,7 @@ def prediction_result_DBS():
         r=(-50.6*q)+90.2
         return(render_template("prediction_result_DBS.html",r=r)) #synchronise front and back-end.
 
+#PREDICT FAQ
 #Function to run the Button at the Front End
 @app.route("/faq",methods=["GET","POST"])
 def faq():
@@ -41,6 +46,8 @@ def q2():
         r= model.generate_content(q)
         return(render_template("q2_reply.html",r=r)) #synchronise front and back-end.
 
+
+#PREDICT CREDITABILITY
 #Function to run the Button at the Front End
 @app.route("/predictcreditability",methods=["GET","POST"])
 def predictcreditability():
@@ -51,8 +58,23 @@ def predictcreditability():
 def predictcreditability_result():
         q=float(request.form.get("q")) # wsgi is text by default, therefore to force to float, where q is the variable
         r=(-0.00011807*q)+1.20396988
+        r=np.where(r>=0.5,"Creditable","Not Creditable")
         return(render_template("predictcreditability_result.html",r=r)) #synchronise front and back-end.
-          
+
+
+# ASSESS TEXT SENTIMENTS
+#Function to run the Button at the Front End
+@app.route("/sentiment_analysis",methods=["GET","POST"])
+def sentiment_analysis():
+        return(render_template("sentiment_analysis.html")) #synchronise front and back-end.
+
+#Setting up the TEXT SENTIMENTS Result Page
+@app.route("/sentiment_analysis_results",methods=["GET","POST"])
+def _sentiment_analysis_results():
+        q=request.form.get("q")
+        r=textblob.TextBlob(q).sentiment        
+        return(render_template("sentiment_analysis_results.html",r=r)) #synchronise front and back-end.
+
 #Run in the cloud. #__name__ is to confirm that this is the application to run.
 if __name__=="__main__":
     app.run()   #If run, then it is to open in browser

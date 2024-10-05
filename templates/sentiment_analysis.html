@@ -1,0 +1,16 @@
+<head>
+    <meta name = "viewpoint"content ="width=device-width", initial-scale=1.0">
+    <link rel = "stylesheet" href="{{url_for("static",filename="styles.css")}}">
+</head>
+    
+</body>
+<div class = "container">   
+        <h2>Enter sentiments</h2>
+        <form action="/sentiment_analysis_results" method="post">
+            <h4>Please enter the query. </h4>
+            <p><input type = "text" name="q"></p>
+            <p><input type="submit" value ="Enter"></p>
+        </form> 
+</div>
+
+
